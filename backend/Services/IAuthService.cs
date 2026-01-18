@@ -1,4 +1,9 @@
+
+
+
 using Books.Api.Docker.Dtos;
+
+namespace Books.Api.Docker.Services;
 
 public interface IAuthService
 {
