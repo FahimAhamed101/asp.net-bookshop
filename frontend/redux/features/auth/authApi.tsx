@@ -106,19 +106,9 @@ export const authApi = createApi({
       }),
     }),
     
-    getProfile: builder.query<UserProfileResponse, void>({
-      query: () => "/api/user/me",
-      providesTags: ["Profile"],
-    }),
 
-    updatePatientProfile: builder.mutation<UpdatePatientProfileResponse, UpdatePatientProfileRequest>({
-      query: (patientData) => ({
-        url: "/api/user/me",
-        method: "PUT",
-        body: formatFormDataForAPI(patientData),
-      }),
-      invalidatesTags: ["Profile", "Patient"],
-    }),
+
+
 
  
     

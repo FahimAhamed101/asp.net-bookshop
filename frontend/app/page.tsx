@@ -101,20 +101,10 @@ export default function HomePage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Onboarding Step:</span>
-                    <span className="font-semibold">{user?.onboardingStep || 'Not started'}</span>
+                  
                   </div>
-                  <div className="flex justify-between">
-                    <span>Profile Completion:</span>
-                    <span className="font-semibold">
-                      {user?.personalInfo ? 'Completed' : 'Pending'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Insurance Info:</span>
-                    <span className="font-semibold">
-                      {user?.insuranceInfo?.length > 0 ? 'Added' : 'Not added'}
-                    </span>
-                  </div>
+             
+               
                 </div>
               </div>
             </div>
@@ -122,11 +112,8 @@ export default function HomePage() {
             {/* Call to Action */}
             <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Complete Your Profile</h3>
-              <p className="text-gray-600 mb-4">
-                {user?.onboardingStep === 0 
-                  ? 'Start your onboarding process to access all features.'
-                  : `You're on step ${user?.onboardingStep} of the onboarding process.`}
-              </p>
+           
+
               <Link
                 href="/dashboard/profile"
                 className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
