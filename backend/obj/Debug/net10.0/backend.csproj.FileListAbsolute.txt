@@ -160,3 +160,4 @@ C:\Users\FaHIMWeb\Desktop\ASp.net\backend\obj\Debug\net10.0\backend.pdb
 C:\Users\FaHIMWeb\Desktop\ASp.net\backend\obj\Debug\net10.0\backend.genruntimeconfig.cache
 C:\Users\FaHIMWeb\Desktop\ASp.net\backend\obj\Debug\net10.0\ref\backend.dll
 C:\Users\FaHIMWeb\Desktop\ASp.net\backend\bin\Debug\net10.0\BCrypt.Net-Next.dll
+C:\Users\FaHIMWeb\Desktop\ASp.net\backend\obj\Debug\net10.0\backend.sourcelink.json

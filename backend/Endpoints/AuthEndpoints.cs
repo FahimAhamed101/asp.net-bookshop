@@ -1,5 +1,6 @@
 using Books.Api.Docker.Dtos;
 using Books.Api.Docker.Extensions;
+using Books.Api.Docker.Services;
 
 namespace Auth.Api.Docker.Endpoints;
 
