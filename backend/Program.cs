@@ -29,11 +29,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 app.MapGet("/", () => "API is running!");
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -54,6 +56,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapUserEndpoints();
+app.MapBookEndpoints();
+app.MapCategoryEndpoints();
 
 app.Run();
 

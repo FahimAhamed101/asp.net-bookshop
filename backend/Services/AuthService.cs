@@ -32,7 +32,7 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
                 return new Response { Status = ResponseStatus.Warning, Message = "User already exist!" };
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response { Status = ResponseStatus.Error, Message = "User creation failed! Please check user details and try again." };
         }
@@ -72,7 +72,7 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
             return new Response { Status = ResponseStatus.Success, Message = "Login successful!", Data = authResponse };
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response { Status = ResponseStatus.Error, Message = "Login failed! Please check user details and try again." };
         }       
@@ -81,7 +81,13 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
     private string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenKey = Encoding.UTF8.GetBytes(configuration["JWT:Secret"]);
+        var secret = configuration["JWT:Secret"] ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(secret))
+        {
+            throw new InvalidOperationException("JWT secret is not configured.");
+        }
+
+        var tokenKey = Encoding.UTF8.GetBytes(secret);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

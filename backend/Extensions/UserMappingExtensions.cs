@@ -11,7 +11,7 @@ public static class UserMappingExtensions
             User.Name,
             User.Email,
             User.Password,
-            User.Initials);
+            User.Initials ?? string.Empty);
     }
 
     public static User ToEntity(this RegisterUserRequest request)
