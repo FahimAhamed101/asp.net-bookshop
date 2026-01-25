@@ -1,9 +1,5 @@
 
-
-
-using Books.Api.Docker.Dtos;
-
-namespace Books.Api.Docker.Services;
+namespace AspNetBookshop.Services;
 
 public interface IAuthService
 {

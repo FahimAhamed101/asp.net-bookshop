@@ -1,6 +1,3 @@
-using Books.Api.Docker.Dtos;
-using Books.Api.Docker.Extensions;
-using Books.Api.Docker.Services;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -27,7 +24,7 @@ public static class CategoryEndpoints
     {
         var categories = await CategoryService.GetCategoriesAsync(cancellationToken);
 
-        return Results.Ok(categories.Select(b => b.ToResponseDto()));
+        return Results.Ok(categories.Select(b => CategoryMappingExtensions.ToResponseDto(b)));
     }
 
     public static async Task<IResult> GetCategoryById(
@@ -43,7 +40,7 @@ public static class CategoryEndpoints
             return Results.NotFound();
         }
 
-        return Results.Ok(category.ToResponseDto());
+        return Results.Ok(CategoryMappingExtensions.ToResponseDto(category));
     }
 
     public static async Task<IResult> CreateCategory(
@@ -56,7 +53,7 @@ public static class CategoryEndpoints
             return Results.Unauthorized();
         }
 
-        var category = request.ToEntity();
+        var category = CategoryMappingExtensions.ToEntity(request);
 
         category.Id = await CategoryService.CreateCategoryAsync(category, cancellationToken);
 
@@ -80,7 +77,7 @@ public static class CategoryEndpoints
 
         try
         {
-            var category = request.ToEntity(id);
+            var category = CategoryMappingExtensions.ToEntity(request, id);
 
             await CategoryService.UpdateCategoryAsync(category, cancellationToken);
 

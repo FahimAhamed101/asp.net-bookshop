@@ -1,6 +1,3 @@
-using Books.Api.Docker.Dtos;
-using Books.Api.Docker.Extensions;
-using Books.Api.Docker.Services;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -33,7 +30,7 @@ public static class BookEndpoints
             return Results.NotFound();
         }
 
-        return Results.Ok(books.Select(b => b.ToResponseDto()));
+        return Results.Ok(books.Select(b => BookMappingExtensions.ToResponseDto(b)));
     }
 
     public static async Task<IResult> GetBookById(
@@ -49,7 +46,7 @@ public static class BookEndpoints
             return Results.NotFound();
         }
 
-        return Results.Ok(book.ToResponseDto());
+        return Results.Ok(BookMappingExtensions.ToResponseDto(book));
     }
 
     public static async Task<IResult> CreateBook(
@@ -62,7 +59,7 @@ public static class BookEndpoints
             return Results.Unauthorized();
         }
 
-        var book = request.ToEntity();
+        var book = BookMappingExtensions.ToEntity(request);
 
         book.Id = await bookService.CreateBookAsync(book, cancellationToken);
 
@@ -86,7 +83,7 @@ public static class BookEndpoints
 
         try
         {
-            var book = request.ToEntity(id);
+            var book = BookMappingExtensions.ToEntity(request, id);
 
             await bookService.UpdateBookAsync(book, cancellationToken);
 

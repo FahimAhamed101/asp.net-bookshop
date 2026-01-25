@@ -1,5 +1,4 @@
 using Auth.Api.Docker.Endpoints;
-using Books.Api.Docker.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -30,7 +29,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AspNetBookshop.Services.IAuthService, AspNetBookshop.Services.AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();

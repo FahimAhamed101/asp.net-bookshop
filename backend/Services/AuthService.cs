@@ -3,11 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Books.Api.Docker.Dtos;
 using Microsoft.EntityFrameworkCore;
-using Books.Api.Docker.Entities;
 
-namespace Books.Api.Docker.Services;
+namespace AspNetBookshop.Services;
 
 public sealed class AuthService(ApplicationDbContext context, IConfiguration configuration) : IAuthService
 {
@@ -25,16 +23,16 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
                 context.Users.Add(user);
                 await context.SaveChangesAsync(cancellationToken);
 
-                return new Response { Status = ResponseStatus.Success, Message = "User created successfully!" };
+                return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Success, Message = "User created successfully!" };
             }
             else
             {
-                return new Response { Status = ResponseStatus.Warning, Message = "User already exist!" };
+                return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Warning, Message = "User already exist!" };
             }
         }
         catch (Exception)
         {
-            return new Response { Status = ResponseStatus.Error, Message = "User creation failed! Please check user details and try again." };
+            return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Error, Message = "User creation failed! Please check user details and try again." };
         }
     }
 
@@ -46,17 +44,17 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
 
             if (dbUser == null)
             {
-                return  new Response { Status = ResponseStatus.Error, Message = "User not found!" };
+                return  new Response { Status = AspNetBookshop.Entities.ResponseStatus.Error, Message = "User not found!" };
             }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, dbUser.Password))
             {
-                return new Response { Status = ResponseStatus.Error, Message = "Wrong password!" };
+                return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Error, Message = "Wrong password!" };
             }
 
             if (string.IsNullOrWhiteSpace(configuration["JWT:Secret"]))
             {
-                return new Response { Status = ResponseStatus.Error, Message = "JWT secret is not configured." };
+                return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Error, Message = "JWT secret is not configured." };
             }
 
             var token = GenerateToken(dbUser);
@@ -69,12 +67,12 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
                 dbUser.Initials ?? string.Empty
             );
 
-            return new Response { Status = ResponseStatus.Success, Message = "Login successful!", Data = authResponse };
+            return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Success, Message = "Login successful!", Data = authResponse };
 
         }
         catch (Exception)
         {
-            return new Response { Status = ResponseStatus.Error, Message = "Login failed! Please check user details and try again." };
+            return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Error, Message = "Login failed! Please check user details and try again." };
         }       
     }
 

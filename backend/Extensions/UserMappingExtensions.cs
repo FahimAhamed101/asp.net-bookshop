@@ -1,6 +1,4 @@
-using Books.Api.Docker.Dtos;
-
-namespace Books.Api.Docker.Extensions;
+namespace AspNetBookshop.Extensions;
 
 public static class UserMappingExtensions
 {

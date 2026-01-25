@@ -1,4 +1,4 @@
-namespace Books.Api.Docker.Entities
+namespace AspNetBookshop.Entities
 {
     public static class ResponseStatus
     {

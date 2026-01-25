@@ -1,4 +1,4 @@
-namespace Books.Api.Docker.Dtos;
+
 
 public sealed record CreateBookRequest(
     string Title, 

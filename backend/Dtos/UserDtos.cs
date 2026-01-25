@@ -1,5 +1,5 @@
 
-namespace Books.Api.Docker.Dtos;
+
 
 public sealed record RegisterUserRequest(    
     string Name,

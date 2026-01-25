@@ -1,6 +1,3 @@
-using Books.Api.Docker.Dtos;
-using Books.Api.Docker.Extensions;
-using Books.Api.Docker.Services;
 
 namespace Auth.Api.Docker.Endpoints;
 
@@ -17,10 +14,10 @@ public static class AuthEndpoints
 
     public static async Task<IResult> RegisterUser(
              RegisterUserRequest request,
-             IAuthService UserService,
+             AspNetBookshop.Services.IAuthService UserService,
              CancellationToken cancellationToken)
     {
-        var user = request.ToEntity();        
+        var user = AspNetBookshop.Extensions.UserMappingExtensions.ToEntity(request);        
 
         var response = await UserService.RegisterAsync(user, cancellationToken);
 
@@ -40,7 +37,7 @@ public static class AuthEndpoints
 
     public static async Task<IResult> LoginUser(
              LoginUserRequest request,
-             IAuthService UserService,
+             AspNetBookshop.Services.IAuthService UserService,
              CancellationToken cancellationToken)
     {
         var response = await UserService.LoginAsync(request, cancellationToken);
