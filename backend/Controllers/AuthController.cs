@@ -1,103 +1,95 @@
-
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AspNetBookshop.Extensions;
 
-namespace Auth.Api.Docker.Endpoints;
-
-public static class AuthEndpoints
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    public static void MapUserEndpoints(this IEndpointRouteBuilder app)
+    private readonly AspNetBookshop.Services.IAuthService _userService;
+    private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
+
+    public AuthController(
+        AspNetBookshop.Services.IAuthService userService,
+        ApplicationDbContext context,
+        IConfiguration configuration)
     {
-        var UserGroup = app.MapGroup("api/Auth");
-
-        UserGroup.MapPost("", RegisterUser).WithName(nameof(RegisterUser));
-
-        UserGroup.MapPost("/loginUser", LoginUser).WithName(nameof(LoginUser));
-
-        UserGroup.MapGet("/profile", GetProfile).WithName(nameof(GetProfile));
-
-        UserGroup.MapPost("/logout", LogoutUser).WithName(nameof(LogoutUser));
+        _userService = userService;
+        _context = context;
+        _configuration = configuration;
     }
 
-    public static async Task<IResult> RegisterUser(
-             RegisterUserRequest request,
-             AspNetBookshop.Services.IAuthService UserService,
-             CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Name)
             || string.IsNullOrWhiteSpace(request.Email)
             || string.IsNullOrWhiteSpace(request.Password))
         {
-            return Results.BadRequest("Name, email, and password are required.");
+            return BadRequest("Name, email, and password are required.");
         }
         if (!string.IsNullOrWhiteSpace(request.Role)
             && request.Role != "Admin"
             && request.Role != "User")
         {
-            return Results.BadRequest("Role must be Admin or User.");
+            return BadRequest("Role must be Admin or User.");
         }
 
-        var user = AspNetBookshop.Extensions.UserMappingExtensions.ToEntity(request);        
+        var user = UserMappingExtensions.ToEntity(request);
 
-        var response = await UserService.RegisterAsync(user, cancellationToken);
+        var response = await _userService.RegisterAsync(user, cancellationToken);
 
         switch (response.Status)
         {
             case "Error":
-                return Results.BadRequest(response.Message);
+                return BadRequest(response.Message);
             case "Conflict":
-                return Results.Conflict(response.Message);
+                return Conflict(response.Message);
         }
 
-        return Results.CreatedAtRoute(
-            nameof(RegisterUser),
-            new { id = user.Id },
-            user);
+        return CreatedAtAction(nameof(RegisterUser), new { id = user.Id }, user);
     }
 
-    public static async Task<IResult> LoginUser(
-             LoginUserRequest request,
-             AspNetBookshop.Services.IAuthService UserService,
-             CancellationToken cancellationToken)
+    [HttpPost("loginUser")]
+    public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
     {
-        var response = await UserService.LoginAsync(request, cancellationToken);
+        var response = await _userService.LoginAsync(request, cancellationToken);
         switch (response.Status)
         {
             case "Error":
-                return Results.BadRequest(response.Message);
+                return BadRequest(response.Message);
             case "Unauthorized":
-                return Results.Unauthorized();
+                return Unauthorized();
         }
-        return Results.Ok(response);
+        return Ok(response);
     }
 
-    public static IResult LogoutUser()
+    [HttpPost("logout")]
+    public IActionResult LogoutUser()
     {
         // Stateless JWT logout; client should discard the token.
-        return Results.Ok(new { status = "Success", message = "Logged out." });
+        return Ok(new { status = "Success", message = "Logged out." });
     }
 
-    public static async Task<IResult> GetProfile(
-             HttpRequest httpRequest,
-             ApplicationDbContext context,
-             IConfiguration configuration,
-             CancellationToken cancellationToken)
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
-        if (!TryGetEmailFromToken(httpRequest, configuration, out var email))
+        if (!TryGetEmailFromToken(Request, _configuration, out var email))
         {
-            return Results.Unauthorized();
+            return Unauthorized();
         }
 
-        var user = await context.Users
+        var user = await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         if (user is null)
         {
-            return Results.NotFound();
+            return NotFound();
         }
 
-        return Results.Ok(user.ToProfileResponseDto());
+        return Ok(user.ToProfileResponseDto());
     }
 
     private static bool TryGetEmailFromToken(

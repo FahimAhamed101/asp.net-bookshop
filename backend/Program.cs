@@ -1,4 +1,3 @@
-using Auth.Api.Docker.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -55,10 +54,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-app.MapUserEndpoints();
-app.MapBookEndpoints();
-app.MapCategoryEndpoints();
-app.MapCheckoutEndpoints();
+app.MapControllers();
 
 app.Run();
 

@@ -1,45 +1,47 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
 
-public static class CheckoutEndpoints
+[ApiController]
+[Route("api/[controller]")]
+public class CheckoutController : ControllerBase
 {
-    public static void MapCheckoutEndpoints(this IEndpointRouteBuilder app)
-    {
-        var checkoutGroup = app.MapGroup("api/Checkout");
+    private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
 
-        checkoutGroup.MapPost("/create-session", CreateSession).WithName(nameof(CreateSession)).DisableAntiforgery();
+    public CheckoutController(ApplicationDbContext context, IConfiguration configuration)
+    {
+        _context = context;
+        _configuration = configuration;
     }
 
-    public static async Task<IResult> CreateSession(
-        CreateCheckoutSessionRequest request,
-        ApplicationDbContext context,
-        IConfiguration configuration,
-        HttpRequest httpRequest,
-        CancellationToken cancellationToken)
+    [HttpPost("create-session")]
+    [DisableAntiforgeryToken]
+    public async Task<IActionResult> CreateSession([FromBody] CreateCheckoutSessionRequest request, CancellationToken cancellationToken)
     {
         if (request.Items is null || request.Items.Length == 0)
         {
-            return Results.BadRequest("Cart is empty.");
+            return BadRequest("Cart is empty.");
         }
 
-        var secretKey = configuration["Stripe:SecretKey"];
+        var secretKey = _configuration["Stripe:SecretKey"];
         if (string.IsNullOrWhiteSpace(secretKey))
         {
-            return Results.Problem("Stripe secret key is not configured.");
+            return Problem("Stripe secret key is not configured.");
         }
 
         StripeConfiguration.ApiKey = secretKey;
 
         var bookIds = request.Items.Select(i => i.BookId).ToArray();
-        var books = await context.Books
+        var books = await _context.Books
             .AsNoTracking()
             .Where(b => bookIds.Contains(b.Id))
             .ToListAsync(cancellationToken);
 
         if (books.Count != bookIds.Length)
         {
-            return Results.BadRequest("One or more books were not found.");
+            return BadRequest("One or more books were not found.");
         }
 
         var lineItems = new List<SessionLineItemOptions>();
@@ -61,16 +63,16 @@ public static class CheckoutEndpoints
                         Description = book.Author,
                         Images = string.IsNullOrWhiteSpace(book.Image)
                             ? null
-                            : new List<string> { EnsureAbsoluteImageUrl(book.Image, httpRequest) }
+                            : new List<string> { EnsureAbsoluteImageUrl(book.Image, Request) }
                     }
                 }
             });
         }
 
-        var frontendBaseUrl = configuration["FrontendBaseUrl"];
+        var frontendBaseUrl = _configuration["FrontendBaseUrl"];
         if (string.IsNullOrWhiteSpace(frontendBaseUrl))
         {
-            frontendBaseUrl = $"{httpRequest.Scheme}://{httpRequest.Host}";
+            frontendBaseUrl = $"{Request.Scheme}://{Request.Host}";
         }
 
         var sessionOptions = new SessionCreateOptions
@@ -96,7 +98,7 @@ public static class CheckoutEndpoints
         var service = new SessionService();
         var session = await service.CreateAsync(sessionOptions, cancellationToken: cancellationToken);
 
-        return Results.Ok(new CreateCheckoutSessionResponse(session.Url ?? string.Empty));
+        return Ok(new CreateCheckoutSessionResponse(session.Url ?? string.Empty));
     }
 
     private static string EnsureAbsoluteImageUrl(string imageUrl, HttpRequest request)
