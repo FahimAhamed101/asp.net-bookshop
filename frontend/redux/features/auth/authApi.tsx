@@ -91,7 +91,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/api/Auth",  // This should match your actual endpoint
+        url: "/api/Auth/loginUser",
         method: "POST",
         body: credentials,
       }),
@@ -100,7 +100,7 @@ export const authApi = createApi({
     
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (credentials) => ({
-        url: "/api/Auth/register",  // Adjust based on your actual register endpoint
+        url: "/api/Auth",
         method: "POST",
         body: credentials,
       }),
