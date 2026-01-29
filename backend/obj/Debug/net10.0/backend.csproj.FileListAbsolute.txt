@@ -328,3 +328,5 @@ C:\Users\Fahim\Desktop\asp.net-bookshop\backend\obj\Debug\net10.0\refint\backend
 C:\Users\Fahim\Desktop\asp.net-bookshop\backend\obj\Debug\net10.0\backend.pdb
 C:\Users\Fahim\Desktop\asp.net-bookshop\backend\obj\Debug\net10.0\backend.genruntimeconfig.cache
 C:\Users\Fahim\Desktop\asp.net-bookshop\backend\obj\Debug\net10.0\ref\backend.dll
+C:\Users\Fahim\Desktop\asp.net-bookshop\backend\bin\Debug\net10.0\backend.staticwebassets.runtime.json
+C:\Users\Fahim\Desktop\asp.net-bookshop\backend\bin\Debug\net10.0\Stripe.net.dll

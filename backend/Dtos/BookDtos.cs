@@ -1,5 +1,7 @@
 
 
+using Microsoft.AspNetCore.Http;
+
 public sealed record CreateBookRequest(
     string Title, 
     string ISBN, 
@@ -7,6 +9,17 @@ public sealed record CreateBookRequest(
     string Author,
     string Category,
     string Image,
+    decimal Price,
+    string Email);
+
+public sealed record CreateBookFormRequest(
+    string Title,
+    string ISBN,
+    string Description,
+    string Author,
+    string Category,
+    IFormFile? ImageFile,
+    decimal Price,
     string Email);
 
 public sealed record BookResponse(
@@ -16,7 +29,8 @@ public sealed record BookResponse(
     string Description,
     string Author,
     string Category,
-    string Image);
+    string Image,
+    decimal Price);
 
 public sealed record UpdateBookRequest(
     string Title,
@@ -25,6 +39,17 @@ public sealed record UpdateBookRequest(
     string Author,
     string Category,
     string Image,
+    decimal Price,
+    string Email);
+
+public sealed record UpdateBookFormRequest(
+    string Title,
+    string ISBN,
+    string Description,
+    string Author,
+    string Category,
+    IFormFile? ImageFile,
+    decimal Price,
     string Email);
 
 public sealed record DeleteBookRequest(   

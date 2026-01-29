@@ -41,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseCors("AllowAll");
 if (app.Environment.IsDevelopment())
 {
@@ -57,6 +58,7 @@ using (var scope = app.Services.CreateScope())
 app.MapUserEndpoints();
 app.MapBookEndpoints();
 app.MapCategoryEndpoints();
+app.MapCheckoutEndpoints();
 
 app.Run();
 

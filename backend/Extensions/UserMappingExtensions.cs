@@ -9,7 +9,18 @@ public static class UserMappingExtensions
             User.Name,
             User.Email,
             User.Password,
-            User.Initials ?? string.Empty);
+            User.Initials ?? string.Empty,
+            User.Role);
+    }
+
+    public static UserProfileResponse ToProfileResponseDto(this User User)
+    {
+        return new(
+            User.Id,
+            User.Name,
+            User.Email,
+            User.Initials ?? string.Empty,
+            User.Role);
     }
 
     public static User ToEntity(this RegisterUserRequest request)
@@ -19,7 +30,8 @@ public static class UserMappingExtensions
             Name = request.Name,
             Email = request.Email,
             Password = request.Password,
-            Initials = request.Initials
+            Initials = request.Initials ?? string.Empty,
+            Role = string.IsNullOrWhiteSpace(request.Role) ? "User" : request.Role
         };
     }
 
@@ -31,7 +43,8 @@ public static class UserMappingExtensions
             Name = request.Name,
             Email = request.Email,
             Password = request.Password,
-            Initials = request.Initials
+            Initials = request.Initials ?? string.Empty,
+            Role = string.IsNullOrWhiteSpace(request.Role) ? "User" : request.Role
         };
     }
 }

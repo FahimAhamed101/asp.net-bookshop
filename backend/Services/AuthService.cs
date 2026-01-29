@@ -64,7 +64,8 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
                 dbUser.Id,
                 dbUser.Name,
                 dbUser.Email,
-                dbUser.Initials ?? string.Empty
+                dbUser.Initials ?? string.Empty,
+                dbUser.Role
             );
 
             return new Response { Status = AspNetBookshop.Entities.ResponseStatus.Success, Message = "Login successful!", Data = authResponse };
@@ -92,8 +93,7 @@ public sealed class AuthService(ApplicationDbContext context, IConfiguration con
             Subject = new ClaimsIdentity(new[]
             {
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, "Admin"),
-                    new Claim(ClaimTypes.Role, "Customer")
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)

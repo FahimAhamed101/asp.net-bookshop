@@ -11,7 +11,8 @@ public static class BookMappingExtensions
             book.Description,
             book.Author,
             book.Category,
-            book.Image);
+            book.Image,
+            book.Price);
     }
 
     public static Book ToEntity(this CreateBookRequest request)
@@ -23,7 +24,22 @@ public static class BookMappingExtensions
             Description = request.Description,
             Author = request.Author,
             Category = request.Category,
-            Image = request.Image
+            Image = request.Image,
+            Price = request.Price
+        };
+    }
+
+    public static Book ToEntity(this CreateBookFormRequest request, string imagePath)
+    {
+        return new()
+        {
+            Title = request.Title,
+            ISBN = request.ISBN,
+            Description = request.Description,
+            Author = request.Author,
+            Category = request.Category,
+            Image = imagePath,
+            Price = request.Price
         };
     }
 
@@ -37,7 +53,23 @@ public static class BookMappingExtensions
             Description = request.Description,
             Author = request.Author,
             Category = request.Category,
-            Image = request.Image
+            Image = request.Image,
+            Price = request.Price
+        };
+    }
+
+    public static Book ToEntity(this UpdateBookFormRequest request, int id, string imagePath)
+    {
+        return new()
+        {
+            Id = id,
+            Title = request.Title,
+            ISBN = request.ISBN,
+            Description = request.Description,
+            Author = request.Author,
+            Category = request.Category,
+            Image = imagePath,
+            Price = request.Price
         };
     }
 }
